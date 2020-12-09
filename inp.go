@@ -2,6 +2,7 @@ package bundle
 
 import (
 	"bytes"
+	"encoding"
 	"encoding/binary"
 	"errors"
 )
@@ -71,6 +72,14 @@ func (i *Inp) GetUInts8(out *[]uint8) {
 	arr := make([]uint8, size)
 	i.readUnsafe(arr)
 	*out = arr
+}
+
+func (i *Inp) GetBinary(bin encoding.BinaryUnmarshaler) {
+	var bytes []byte
+	i.GetBytes(&bytes)
+	if i.err == nil {
+		i.err = bin.UnmarshalBinary(bytes)
+	}
 }
 
 func (i *Inp) readUnsafe(out interface{}) {

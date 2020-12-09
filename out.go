@@ -2,6 +2,7 @@ package bundle
 
 import (
 	"bytes"
+	"encoding"
 	"encoding/binary"
 )
 
@@ -82,6 +83,15 @@ func (o *Out) PutBytes(x []byte) {
 func (o *Out) PutUints8(x []uint8) {
 	o.PutUInt32(uint32(len(x)))
 	o.writeUnsafe(x)
+}
+
+func (o *Out) PutBinary(bin encoding.BinaryMarshaler) {
+	bytes, err := bin.MarshalBinary()
+	if err != nil {
+		o.err = err
+	} else {
+		o.PutBytes(bytes)
+	}
 }
 
 func (o *Out) MarshalBinary() ([]byte, error) {
