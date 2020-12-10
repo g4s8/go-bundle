@@ -1,3 +1,9 @@
+[![CI](https://github.com/g4s8/go-bundle/workflows/CI/badge.svg)](https://github.com/g4s8/go-bundle/actions?query=workflow%3ACI)
+[![GitHub release](https://img.shields.io/github/release/g4s8/go-bundle.svg?label=version)](https://github.com/g4s8/go-bundle/releases/latest)
+
+[![Hits-of-Code](https://hitsofcode.com/github/g4s8/go-bundle)](https://hitsofcode.com/view/github/g4s8/go-bundle)
+[![Lines of code](https://img.shields.io/tokei/lines/github/g4s8/go-bundle)](https://github.com/g4s8/go-bundle/tree/master/)
+
 Simple binary encoding and decoding tool, a type-safe wrapper for `encoding/binary` package.
 
 Implements `BinaryMarshaler` and `BinaryUnmarshaler` from `encoding`, supports different
