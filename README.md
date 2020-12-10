@@ -1,8 +1,28 @@
-Binary encoding and decoding tool, type-safe wrapper for `encoding/binary` package.
+Simple binary encoding and decoding tool, a type-safe wrapper for `encoding/binary` package.
 
 Implements `BinaryMarshaler` and `BinaryUnmarshaler` from `encoding`, supports different
 `encoding.BiteOrder`s. Errors accumulator to avoid each line error checks.
 It could be useful to implement custom `encoding` binary protocols.
+
+# The problem
+
+Go has a package [encoding/binary](https://golang.org/pkg/encoding/binary/)
+for binary serialization, it provides good and low-level API for encoding.
+The problem is that it's not really handy and requires a lot of boilerplate
+code to read and write data to stream, such as: lack of type safety (accepts
+`interface{}` params) error-checks for each line,
+custom array/slice encoding/decoding protocols, custom nested encoding/decoding.
+
+This library aims to solve these issues by providing type-safe
+and extended wrapper over `encoding/binary` package which reduce the amount
+of bolierplate codes and ensures type-safety.
+
+Since it uses `encoding/binary` under the hood, keep in mind that:
+> This package favors simplicity over efficiency.
+Clients that require high-performance serialization,
+especially for large data structures,
+should look at more advanced solutions such as the encoding/gob
+package or protocol buffers.
 
 # Install
 

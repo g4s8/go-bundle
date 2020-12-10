@@ -34,6 +34,11 @@ func (o *Out) Error() error {
 	return o.err
 }
 
+// PutBool buts a bool to bundle
+func (o *Out) PutBool(x bool) {
+	o.writeUnsafe(x)
+}
+
 // PutByte puts a byte to bundle
 func (o *Out) PutByte(x byte) {
 	o.PutUInt8(x)
@@ -67,6 +72,11 @@ func (o *Out) PutUInt32(x uint32) {
 // PutInt32 puts int32 to bundle
 func (o *Out) PutInt32(x int32) {
 	o.writeUnsafe(x)
+}
+
+// PutRune puts rune to bundle
+func (o *Out) PutRune(x rune) {
+	o.writeUnsafe(int32(x))
 }
 
 // PutInt64 puts int64 to bundle

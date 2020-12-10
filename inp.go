@@ -5,6 +5,7 @@ import (
 	"encoding"
 	"encoding/binary"
 	"errors"
+	"fmt"
 )
 
 // Inp is bundle input type, it wraps source byte array
@@ -51,6 +52,40 @@ func (i *Inp) UnmarshalBinary(data []byte) error {
 
 func (i *Inp) Error() error {
 	return i.err
+}
+
+// GetBool reads bool type to `out` param
+func (i *Inp) GetBool(out *bool) {
+	i.readUnsafe(out)
+}
+
+// GetUInt8 reads int8 type to `out` param
+func (i *Inp) GetUInt8(out *int8) {
+	i.readUnsafe(out)
+}
+
+// GetInt8 reads int8 type to `out` param
+func (i *Inp) GetInt8(out *int8) {
+	i.readUnsafe(out)
+}
+
+// GetUInt16 reads uint16 type to `out` param
+func (i *Inp) GetUInt16(out *uint16) {
+	i.readUnsafe(out)
+}
+
+// GetInt16 reads int16 type to `out` param
+func (i *Inp) GetInt16(out *int16) {
+	i.readUnsafe(out)
+}
+
+// GetRune reads rune type to `out` param
+func (i *Inp) GetRune(out *rune) {
+	var tmp int32
+	i.readUnsafe(&i)
+	if i.Error() == nil {
+		*out = tmp
+	}
 }
 
 // GetInt32 reads int32 type to `out` param
@@ -106,6 +141,16 @@ func (i *Inp) GetBinary(bin encoding.BinaryUnmarshaler) {
 	if i.err == nil {
 		i.err = bin.UnmarshalBinary(bytes)
 	}
+}
+
+func (i *Inp) String() string {
+	return fmt.Sprintf("Input unread: %d, order: %s",
+		i.src.Len(), i.bo)
+}
+
+func (i *Inp) GoString() string {
+	return fmt.Sprintf("bundle.Input(Buffer(%#v), Order(%#v))",
+		i.src, i.bo)
 }
 
 func (i *Inp) readUnsafe(out interface{}) {
