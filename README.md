@@ -62,6 +62,16 @@ out.PutString("hello bundle!")
 Also, output accepts `encoding.BinaryMarshaler` types to put:
 `out.PutBinary(binary)`.
 
+### Nested bundles
+
+Bundle can contain nested bundles, to put one bundle into another
+use `PutBundle` method:
+```go
+parent := NewLEOut()
+nested := NewLEOut()
+parent.PutBundle(nested)
+```
+
 ### Errors
 
 Output `Put*` methods doesn't return errors, but in case of error it will be
@@ -131,6 +141,16 @@ inp.ReadBytes(&bts)
 // Read binary unmarshaler
 // subInput - implements `encoding.BinaryUnmarshaler`
 inp.ReadBinary(subInput)
+```
+
+### Reading nested bundles
+
+`Inp` can contain nested bundles, to read it create new empty `Inp` with
+`new(Inp)` and read it from parent bundle:
+```go
+// var parent Inp
+nested := new(Inp)
+parent.GetBundle(nested)
 ```
 
 ### Errors

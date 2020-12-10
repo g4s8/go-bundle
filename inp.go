@@ -60,7 +60,7 @@ func (i *Inp) GetBool(out *bool) {
 }
 
 // GetUInt8 reads int8 type to `out` param
-func (i *Inp) GetUInt8(out *int8) {
+func (i *Inp) GetUInt8(out *uint8) {
 	i.readUnsafe(out)
 }
 
@@ -113,6 +113,16 @@ func (i *Inp) GetBytes(out *[]byte) {
 	i.GetUInts8(out)
 }
 
+// GetFloat32 reads float32 to `out` param
+func (i *Inp) GetFloat32(out *float32) {
+	i.readUnsafe(out)
+}
+
+// GetFloat64 reads float64 to `out` param
+func (i *Inp) GetFloat64(out *float64) {
+	i.readUnsafe(out)
+}
+
 // GetUInts8 reads unit8 array to `out` param
 func (i *Inp) GetUInts8(out *[]uint8) {
 	var size uint32
@@ -143,6 +153,24 @@ func (i *Inp) GetBinary(bin encoding.BinaryUnmarshaler) {
 	}
 }
 
+func (i *Inp) GetBundle(b *Inp) {
+	if i.err != nil {
+		return
+	}
+	var bo uint8
+	i.GetUInt8(&bo)
+	switch bo {
+	case encBoBE:
+		b.bo = binary.BigEndian
+	case encBoLE:
+		b.bo = binary.LittleEndian
+	default:
+		i.err = errUnsupportedByteOred
+		return
+	}
+	i.GetBinary(b)
+}
+
 func (i *Inp) String() string {
 	return fmt.Sprintf("Input unread: %d, order: %s",
 		i.src.Len(), i.bo)
@@ -153,8 +181,14 @@ func (i *Inp) GoString() string {
 		i.src, i.bo)
 }
 
+var errNoInputSource = errors.New("input was not unmarshaled: source is nil")
+
 func (i *Inp) readUnsafe(out interface{}) {
 	if i.err != nil {
+		return
+	}
+	if i.src == nil {
+		i.err = errNoInputSource
 		return
 	}
 	i.err = binary.Read(i.src, i.bo, out)

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding"
 	"encoding/binary"
+	"errors"
 )
 
 // Out bundle of binary data to write
@@ -80,7 +81,7 @@ func (o *Out) PutRune(x rune) {
 }
 
 // PutInt64 puts int64 to bundle
-func (o *Out) PutInt64(x uint64) {
+func (o *Out) PutInt64(x int64) {
 	o.writeUnsafe(x)
 }
 
@@ -123,6 +124,29 @@ func (o *Out) PutBinary(bin encoding.BinaryMarshaler) {
 	} else {
 		o.PutBytes(bytes)
 	}
+}
+
+var errUnsupportedByteOred = errors.New("unsupported byte order")
+
+const (
+	encBoBE = 1
+	encBoLE = 2
+)
+
+// PutBundle puts nested bundle
+func (o *Out) PutBundle(b *Out) {
+	if o.err != nil {
+		return
+	}
+	if b.bo == binary.BigEndian {
+		o.PutUInt8(encBoBE)
+	} else if b.bo == binary.LittleEndian {
+		o.PutUInt8(encBoLE)
+	} else {
+		o.err = errUnsupportedByteOred
+		return
+	}
+	o.PutBinary(b)
 }
 
 // Flip bundle onput to input
